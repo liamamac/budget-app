@@ -1,22 +1,28 @@
 const connectDB = require("../config/db");
+const { ObjectId } = require('mongodb');
 
-async function createUser(name, email, password) {
-    const db = await connectDB;
-    return db.collection('users').insertOne({
-        name,
-        email,
-        password,
-        createdAt: newDate()
-    });
+class User {
+    constructor(name, email, password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.createdAt = new Date()
+    }
+
+async save() {
+    const db = await connectDB();
+    return db.collection('users').insertOne({ ...this });
+  }
+
+  static async findByEmail(email) {
+    const db = await connectDB();
+    return db.collection('users').findOne({ email });
+  }
+
+  static async findById(id) {
+    const db = await connectDB();
+    return db.collection('users').findOne({ _id: new ObjectId(id) });
+  }
 }
 
-async function findByEmail(email) {
-    const db = await connectDB;
-    return db.collection('users').findOne({email});
-}
-
-module.exports = {
-    createUser,
-    findByEmail
-}
-
+module.exports = User;
