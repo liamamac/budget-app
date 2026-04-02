@@ -1,4 +1,4 @@
-const { MongoClient } = require("mongodb");
+const { MongoClient } = require('mongodb');
 
 let db = null;
 
@@ -7,9 +7,9 @@ async function connectDB() {
 
   const client = new MongoClient(process.env.MONGO_URI);
   await client.connect();
-  console.log("Connected to MongoDB Atlas");
+  console.log('Connected to MongoDB Atlas');
 
-  db = client.db("budgettracker");
+  db = client.db('budgettracker');
   return db;
 }
 
