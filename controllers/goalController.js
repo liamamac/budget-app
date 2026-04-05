@@ -1,13 +1,13 @@
 const Goal = require('../models/Goals');
 
-async function createGoal() {
+async function createGoal(req, res) {
     try {
         const { userId, targetAmount, deadline } = req.body;
 
         const goal = new Goal(userId, targetAmount, deadline);
         await goal.save();
 
-        res.status(201).json({message: 'Goal created successfully'});
+        res.status(200).json({message: 'Goal created successfully'});
     } catch (err) {
         res.status(500).json({message: err.message});
     }
