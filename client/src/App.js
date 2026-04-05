@@ -9,9 +9,10 @@ function App() {
   const [message, setMessage] = useState('');
 
   const handleSubmit = async () => {
+    console.log('submit clicked');
     const endpoint = isLogin ? 'api/auth/login' : 'api/auth/register';
     const body = isLogin ? {email, password} : {name, email, password};
-
+    console.log(`hitting: ${API_URL}${endpoint}`);
     try {
       const res = await fetch(`${API_URL}${endpoint}`, {
         method: 'POST',

@@ -1,5 +1,5 @@
 const User = require("../models/Users");
-const bcrpyt = require("bcrypt");
+const bcrypt = require("bcrypt");
 
 async function register(req, res) {
     try{
@@ -25,6 +25,7 @@ async function login(req, res) {
 
         const {email, password} = req.body;
         const user = await User.findByEmail(email);
+        console.log('user found:', user);
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
