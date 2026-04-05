@@ -31,7 +31,7 @@ async function login(req, res) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        const match = await bcrypt.compare(password, user.passwordHash);
+        const match = await bcrypt.compare(password, user.password);
         if (!match) {
         return res.status(401).json({ message: 'Invalid credentials' });
         }
