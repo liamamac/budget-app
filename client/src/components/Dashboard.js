@@ -1,5 +1,38 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { usePlaidLink } from 'react-plaid-link';
 import API_URL from '../config';
+
+function PlaidButton({ userId, onSuccess }) {
+  const [linkToken, setLinkToken] = useState(null);
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/plaid/link-token/${userId}`)
+      .then(res => res.json())
+      .then(data => setLinkToken(data.link_token));
+  }, [userId]);
+
+  const onPlaidSuccess = useCallback(async (publicToken) => {
+    const res = await fetch(`${API_URL}/api/plaid/import`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ publicToken, userId })
+    });
+    const data = await res.json();
+    alert(data.message);
+    onSuccess();
+  }, [userId, onSuccess]);
+
+  const { open, ready } = usePlaidLink({
+    token: linkToken,
+    onSuccess: onPlaidSuccess,
+  });
+
+  return (
+    <button onClick={() => open()} disabled={!ready}>
+      Connect Bank Account
+    </button>
+  );
+}
 
 function Dashboard({ userId }) {
   const [transactions, setTransactions] = useState([]);
@@ -15,7 +48,7 @@ function Dashboard({ userId }) {
   const [progressAmount, setProgressAmount] = useState('');
   const [goalMessage, setGoalMessage] = useState('');
 
-  const fetchTransactions = async () => {
+  const fetchTransactions = useCallback(async () => {
     try {
       const res = await fetch(`${API_URL}/api/transactions/${userId}`);
       const data = await res.json();
@@ -23,7 +56,7 @@ function Dashboard({ userId }) {
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [userId]);
 
   const fetchGoals = async () => {
     try {
@@ -106,6 +139,9 @@ function Dashboard({ userId }) {
   return (
     <div>
       <h1>Dashboard</h1>
+
+      <h2>Import Transactions</h2>
+      <PlaidButton userId={userId} onSuccess={fetchTransactions} />
 
       <h2>Add Transaction</h2>
       <input placeholder="Amount" value={amount} onChange={e => setAmount(e.target.value)} />
