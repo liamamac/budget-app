@@ -10,7 +10,7 @@ async function register(req, res) {
             return res.status(400).json({message: "Email already in use" });
         }
 
-        const passwordHash = await bcrpyt.hash(password, 10);
+        const passwordHash = await bcrypt.hash(password, 10);
         const user = new User(name, email, passwordHash);
         await user.save();
 
