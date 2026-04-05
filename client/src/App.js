@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import API_URL from './config';
+import Dashboard from './components/Dashboard.js';
 
 function App() {
   const [isLogin, setIsLogin] = useState(true);
@@ -7,24 +8,33 @@ function App() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [userId, setUserId] = useState(null);
 
   const handleSubmit = async () => {
-    console.log('submit clicked');
-    const endpoint = isLogin ? 'api/auth/login' : 'api/auth/register';
-    const body = isLogin ? {email, password} : {name, email, password};
-    console.log(`hitting: ${API_URL}${endpoint}`);
+    const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
+    const body = isLogin ? { email, password } : { name, email, password };
+
     try {
       const res = await fetch(`${API_URL}${endpoint}`, {
         method: 'POST',
-        headers: {'Content-type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
       });
       const data = await res.json();
-      setMessage(data.message);
+
+      if (res.ok && isLogin) {
+        setUserId(data.userId);
+      } else {
+        setMessage(data.message);
+      }
     } catch (err) {
       setMessage('Something went wrong');
     }
   };
+
+  if (userId) {
+    return <Dashboard userId={userId} />;
+  }
 
   return (
     <div>
