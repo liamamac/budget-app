@@ -1,4 +1,4 @@
-const Transaction = require('./Transaction');
+const Transaction = require('./Transactions');
 
 class ExpenseTransaction extends Transaction {
     constructor(userId, amount, date, category, description) {

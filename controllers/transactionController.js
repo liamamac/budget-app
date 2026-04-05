@@ -1,4 +1,4 @@
-const Transaction = require('../models/Transaction');
+const Transaction = require('../models/Transactions');
 const TransactionFactory = require('../factories/TransactionFactory');
 
 async function createTransaction(req, res) {
