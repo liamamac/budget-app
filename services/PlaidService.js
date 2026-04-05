@@ -31,13 +31,20 @@ class PlaidService {
     return response.data.access_token;
     }
 
-    static async fetchTransactions(accessToken) {
-        const response = await plaidClient.transactionsGet({
+static async fetchTransactions(accessToken, retries = 5, delay = 3000) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await plaidClient.transactionsGet({
         access_token: accessToken,
-        start_date: '2024-01-01',
+        start_date: '2020-01-01',
         end_date: new Date().toISOString().split('T')[0],
-    });
-    return response.data.transactions;
+      });
+      return response.data.transactions;
+    } catch (err) {
+      if (i === retries - 1) throw err;
+      await new Promise(resolve => setTimeout(resolve, delay));
     }
+  }
+}
 }
 module.exports = PlaidService;
