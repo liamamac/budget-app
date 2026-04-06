@@ -1,5 +1,7 @@
 const Transaction = require('../models/Transactions');
 const TransactionFactory = require('../factories/TransactionFactory');
+const connectDB = require('../config/db');
+const { ObjectId } = require('mongodb');
 
 async function createTransaction(req, res) {
     try {
@@ -45,9 +47,45 @@ async function updateTransaction(req, res) {
     }
 }
 
+async function getSummary(req, res) {
+    try {
+        const { userId } = req.params;
+        const { startDate, endDate } = req.query;
+
+        const db = await connectDB();
+        const transactions = await db.collection('transactions').find({
+        userId: new ObjectId(userId),
+        date: {
+            $gte: new Date(startDate),
+            $lte: new Date(endDate)
+        }
+        }).toArray();
+
+        const summary = transactions.reduce((acc, t) => {
+        if (t.type === 'income') {
+            acc.totalIncome += t.amount;
+        } else {
+            acc.totalExpenses += t.amount;
+        }
+        return acc;
+        }, { totalIncome: 0, totalExpenses: 0 });
+
+        summary.net = summary.totalIncome - summary.totalExpenses;
+        summary.byCategory = transactions.reduce((acc, t) => {
+        acc[t.category] = (acc[t.category] || 0) + t.amount;
+        return acc;
+        }, {});
+
+        res.status(200).json(summary);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+}
+
 module.exports = { 
     createTransaction, 
     getTransactions, 
     deleteTransaction, 
-    updateTransaction 
+    updateTransaction,
+    getSummary
 };

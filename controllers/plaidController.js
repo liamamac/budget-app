@@ -28,15 +28,14 @@ async function importTransactions(req, res) {
                 userId,
                 Math.abs(t.amount),
                 t.date,
-                t.category?.[0] || 'Uncategorized',
-                t.name
+                t.personal_finance_category?.primary || 'Uncategorized',
+                t.merchant_name || t.name
             );
             await transaction.save();
         }
 
         res.status(200).json({message: `${plaidTransactions.length} transaction imported`});
     } catch (err) {
-          console.log('full error:', err.response?.data);
         res.status(500).json({message: err.message});
     }
 
