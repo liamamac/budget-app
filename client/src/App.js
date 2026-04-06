@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import API_URL from './config';
 import Dashboard from './components/Dashboard.js';
+import './App.css';
 
 function App() {
   const [isLogin, setIsLogin] = useState(true);

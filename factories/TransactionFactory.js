@@ -1,6 +1,9 @@
 const IncomeTransaction = require('../models/IncomeTransaction');
 const ExpenseTransaction = require('../models/ExpenseTransaction');
 
+// Factory Method pattern - centralizes transaction object creation
+// Controllers call this instead of instantiating IncomeTransaction 
+// or ExpenseTransaction directly
 class TransactionFactory {
   static create(type, userId, amount, date, category, description) {
     if (type === 'income') {

@@ -1,9 +1,10 @@
+// Base state class
 class GoalState {
     handleGoalBehavior(goal) {
         throw new Error('handleGoalBehavior must be implemented');
     }
 }
-
+// Active state - goal is in progress, checks for completion or overdue
 class ActiveState extends GoalState {
     handleGoalBehavior(goal) {
         if (goal.currentAmount >= goal.targetAmount) {
@@ -17,13 +18,13 @@ class ActiveState extends GoalState {
         }
     }
 }
-
+// Completed state - goal has been reached, ignores further updates
 class CompletedState extends GoalState {
     handleGoalBehavior(goal) {
         console.log(`Goal ${goal.goalId} is already completed`);
     }
 }
-
+// Overdue state - deadline has passed, ignores further updates
 class OverdueState extends GoalState {
     handleGoalBehavior(goal) {
         console.log(`Goal ${goal.goalId} is overdue and cannot be updated`);

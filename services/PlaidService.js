@@ -30,7 +30,7 @@ class PlaidService {
     });
     return response.data.access_token;
     }
-
+// Retries fetching transactions until Plaid sandbox has them ready
 static async fetchTransactions(accessToken, retries = 5, delay = 3000) {
   for (let i = 0; i < retries; i++) {
     try {

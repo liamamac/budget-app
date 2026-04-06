@@ -1,6 +1,8 @@
 const connectDB = require("../config/db");
 const { ObjectId } = require('mongodb');
 
+// Base class for all transaction types
+// IncomeTransaction and ExpenseTransaction extend this class
 class Transaction {
     constructor(userId, amount, date, category, type, description) {
         this.userId = new ObjectId(userId);
@@ -11,13 +13,13 @@ class Transaction {
         this.description = description;
         this.createdAt = new Date();
     }
-
+    // Validates transaction data before saving to DB
     validate() {
         if (!this.amount || this.amount <= 0) throw new Error('Amount must be greater than 0');
         if (!this.category) throw new Error('Category is required');
         if (!this.type) throw new Error('Type is required');
     }
-
+    // Returns signed amount - positive for income, negative for expense
     calculate() {
         return this.type === 'income' ? this.amount : -this.amount;
     }

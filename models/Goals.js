@@ -17,7 +17,7 @@ class Goal {
         this.currentAmount += amount;
         this.checkStatus();
     }
-
+    js// Delegates status checking to the current state object
     checkStatus() {
         this.state.handleGoalBehavior(this);
     }
